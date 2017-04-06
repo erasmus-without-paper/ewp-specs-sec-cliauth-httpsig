@@ -8,18 +8,6 @@ use of HTTP Signatures.
 * [See the index of all other EWP Specifications][develhub]
 
 
-Status
-------
-
-This document will **eventually** describe a new client authentication protocol
-which will replace [TLS Client Certificate Authentication][cliauth-tlscert] as
-the new "primary" way of achieving client authentication in EWP.
-
-However, at the moment, this is still a DRAFT, and SHOULD NOT be implemented
-yet. All EWP clients still rely on the fact that [TLS Client Certificate
-Authentication][cliauth-tlscert] is used.
-
-
 Introduction
 ------------
 
@@ -28,7 +16,7 @@ This client authentication method makes use of:
  * The `Digest` header, specified in [RFC 3230][digest-base].
  * The `SHA-256` Digest Algorithm, specified in [RFC 5843][digest-sha256].
  * The `Authorization` header, specified in
-   [draft-cavage-http-signatures-06][httpsig-authorization] (presumably,
+   [draft-cavage-http-signatures-07][httpsig-authorization] (presumably,
    [soon to become RFC](https://github.com/erasmus-without-paper/ewp-specs-architecture/issues/17#issuecomment-286142084)),
    along with its `rsa-sha256` signature algorithm.
  * Optional "Nonce & Timestamp" replay attack prevention.
@@ -100,20 +88,15 @@ verify it in your code anyway.
 ### Look up the key
 
 Extract the `keyId` from the request's `Authorization` header. It MUST contain
-a Base64-encoded RSA public key (we use `keyId` parameter to transfer to
+a Base64-encoded RSA public key (we use `keyId` parameter to transfer the
 *actual key*, not its ID). If it doesn't, then you MUST respond with HTTP 400
 error message.
 
-The key MUST match at least one of the **public keys** published in the
+The key MUST match at least one of the **public client keys** published in the
 [Registry Service][registry-api]. Consult [Registry API][registry-api] for
 information on how to find a match. If you cannot find a match, then you MUST
 respond with HTTP 403 error response. As usual, including a proper
 `<developer-message>` is RECOMMENDED.
-
-**Important:** This is a DRAFT. Currently the Registry does not serve public
-keys yet. But it would need to, before this authentication is introduced. We
-are planning to introduce a new `<public-key>` element in client credentials
-section, similar to the existing `<certificate>` element.
 
 
 ### Verify the date
@@ -198,13 +181,9 @@ proper private key of the certificate, it is then able to identify (with the
 help of the Registry again) which HEIs such client covers.
 
 Note, that the Registry will verify if your keys meet certain security
-standards (i.e. its length). These standards MAY change in time. Remember to
+standards (i.e. their length). These standards MAY change in time. Remember to
 include `<admin-email>` elements in your manifest file if you want to be
 notified about such changes.
-
-**Important:** This is a DRAFT. Manifest files currently don't allow you to
-publish your public keys, but they would need to allow this before we begin to
-use this new method of authentication.
 
 
 <a name="headers"></a>
@@ -282,6 +261,13 @@ The [Authentication and Security][sec-intro] document
 [recommends][sec-method-rules] that each client authentication method
 specification explicitly answers the following questions:
 
+> How the client's request must look like? How can the server detect that the
+> client is using this particular method for authentication?
+
+See *Implementing a client* chapter above. The server detect this method by
+checking for the existence of a proper set of headers (in particular, the
+`Authorization: Signature` header).
+
 > How can the server verify which HEIs are covered by the requester?
 
 This is described in the *Identify the covered HEIs* chapter above (in the
@@ -305,12 +291,12 @@ Yes. See *Non-repudiation* section above.
 [statuses]: https://github.com/erasmus-without-paper/ewp-specs-management/blob/stable-v1/README.md#statuses
 [digest-base]: https://tools.ietf.org/html/rfc3230#section-4.3.2
 [digest-sha256]: https://tools.ietf.org/html/rfc5843#section-2.2
-[httpsig-authorization]: https://tools.ietf.org/html/draft-cavage-http-signatures-06#section-3.1
+[httpsig-authorization]: https://tools.ietf.org/html/draft-cavage-http-signatures-07#section-3.1
 [error-handling]: https://github.com/erasmus-without-paper/ewp-specs-architecture#error-handling
-[httpsig-www-authenticate]: https://tools.ietf.org/html/draft-cavage-http-signatures-06#section-3.1.1
+[httpsig-www-authenticate]: https://tools.ietf.org/html/draft-cavage-http-signatures-07#section-3.1.1
 [want-digest]: https://tools.ietf.org/html/rfc3230#section-4.3.1
 [registry-api]: https://github.com/erasmus-without-paper/ewp-specs-api-registry
-[verifying-signature]: https://tools.ietf.org/html/draft-cavage-http-signatures-06#section-2.5
+[verifying-signature]: https://tools.ietf.org/html/draft-cavage-http-signatures-07#section-2.5
 [date-header]: https://tools.ietf.org/html/rfc2616#section-14.18
 [sec-method-rules]: https://github.com/erasmus-without-paper/ewp-specs-sec-intro#rules
 [sec-intro]: https://github.com/erasmus-without-paper/ewp-specs-sec-intro
