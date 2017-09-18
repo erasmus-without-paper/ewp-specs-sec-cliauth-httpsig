@@ -45,7 +45,8 @@ Make sure that:
 
    - `(request-target)`,
    - `host`,
-   - `date`,
+   - `date` or [`original-date`][original-date-header] (it MUST contain at
+     least one of those, it also MAY contain both),
    - `digest`,
    - `x-request-id`.
 
@@ -99,15 +100,31 @@ respond with HTTP 403 error response. As usual, including a proper
 `<developer-message>` is RECOMMENDED.
 
 
-### Verify the date
+### Verify the date(s)
 
-You MUST parse and verify the value of the `Date` header included in the
-request. You MUST make sure that your clock is synchronized (otherwise your
-clients won't be able to use your service).
+You need to parse and verify the values of the `Date` and
+[`Original-Date`][original-date-header] headers, if they are included in the
+request (at least one of them MUST be). In particular, you MUST verify at least
+the ones which have been listed in the request's `Authorization` header, but it
+is RECOMMENDED to verify both (if both are included in the request).
 
-If the date does not match your server clock **within a threshold of 5
-minutes**, then you MUST respond with HTTP 400 error response. Your error
-response SHOULD include a proper `<developer-message>`.
+Verification process consists of parsing the date, and matching it against the
+date reported by your own server clock. The verification fails if:
+
+ * The date cannot be parsed.
+
+ * The date does not match your server clock **within a certain threshold of
+   time**.
+
+   - It is RECOMMENDED to use the **5 minutes** threshold.
+   - You MAY choose a greater threshold than 5 minutes, but you MUST NOT choose
+     a lower threshold than this.
+
+If the verification fails, then you MUST respond with HTTP 400 error response.
+Your error response SHOULD include a proper `<developer-message>`.
+
+Also note, that you MUST make sure that your clock is synchronized (otherwise
+your clients won't be able to use your service).
 
 
 ### Verify the nonce (optional)
@@ -121,8 +138,8 @@ The `X-Request-Id` header can be used as a [cryptographic
 nonce](https://en.wikipedia.org/wiki/Cryptographic_nonce). If you decide to
 implement nonce verification, then you MUST reject requests who's nonce has
 already been used. You will need to store the set of nonces which have been
-used. Thanks to the `Date` header, you don't have to store the nonces which
-have been used earlier than 5 minutes ago.
+used. Thanks to the `Date` header (or `Original-Date` header), you don't have
+to store the nonces which have been used earlier than 5 minutes ago.
 
 
 ### Verify the signature
@@ -190,9 +207,11 @@ notified about such changes.
 
 ### Include all required headers
 
- * You MUST include the `Date` header in your request, as defined in [RFC
-   2616][date-header]. You MUST make sure that your clock is synchronized
-   (otherwise your request may fail).
+ * You MUST include either the `Date` or [`Original-Date`][original-date-header]
+   header in your request. You MAY include both of them. The format of the
+   `Original-Date` header, if included, MUST match the "regular" format of the
+   `Date` header, as defined in [RFC 2616][date-header]. You MUST make sure
+   that your clock is synchronized (otherwise your request may fail).
 
  * You MUST include `X-Request-Id` header in your request. It's value MUST be
    an UUID (preferably, version 4), unpredictable and unique for each request,
@@ -214,7 +233,8 @@ algorithm, and you MUST include **at least** the following values in your
 
  - `(request-target)`,
  - `host`,
- - `date`,
+ - `date` or `original-date` (it MUST contain at least one of those, it also
+   MAY contain both),
  - `digest`,
  - `x-request-id`.
 
@@ -243,8 +263,8 @@ machine is tricked into installing attacker's root certificate,
 man-in-the-middle attacks are possible. In this scenario, the use of end-to-end
 HTTP signatures prevents the attacker from *modifying* the message, but it
 *doesn't* prevent him from executing replay-attacks. With help of the `Date`
-and `X-Request-Id` headers, partners MAY implement additional security measures
-to prevent such attacks.
+(`Original-Date`) and `X-Request-Id` headers, partners MAY implement additional
+security measures to prevent such attacks.
 
 
 ### Non-repudiation
@@ -307,3 +327,4 @@ Yes. See *Non-repudiation* section above.
 [srvauth-httpsig]: https://github.com/erasmus-without-paper/ewp-specs-sec-srvauth-httpsig
 [reqencr-tls]: https://github.com/erasmus-without-paper/ewp-specs-sec-reqencr-tls
 [resencr-tls]: https://github.com/erasmus-without-paper/ewp-specs-sec-resencr-tls
+[original-date-header]: https://github.com/erasmus-without-paper/ewp-specs-sec-srvauth-httpsig#original-date
