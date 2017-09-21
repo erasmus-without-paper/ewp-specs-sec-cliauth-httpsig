@@ -89,9 +89,8 @@ verify it in your code anyway.
 ### Look up the key
 
 Extract the `keyId` from the request's `Authorization` header. It MUST contain
-a Base64-encoded RSA public key (we use `keyId` parameter to transfer the
-*actual key*, not its ID). If it doesn't, then you MUST respond with HTTP 400
-error message.
+a HEX-encoded SHA-256 fingerprint. If it doesn't, then you MUST respond with
+HTTP 400 error message.
 
 The key MUST match at least one of the **public client keys** published in the
 [Registry Service][registry-api]. Consult [Registry API][registry-api] for
@@ -189,7 +188,7 @@ key-pair you use for your TLS communication if you want to.
 
 Each partner declares (in his [Manifest file][discovery-api]) a list of public
 keys it will use for communicating with other hosts. This list is later fetched
-by registry, and the keys (or their fingerprints) are served to all other
+by registry, and the keys (and/or their fingerprints) are served to all other
 partners see (see [Registry API][registry-api] for details).
 
 Usually (but not necessarily always) you will bind your public key to all HEIs
@@ -244,8 +243,9 @@ for handling authentication, non-repudiation and security described in this
 document, but other headers also MAY be very important in your case.
 
 The `keyId` parameter of the `Authorization` header MUST contain a
-Base64-encoded RSA public key. If MUST be one of the keys you previously
-published in your manifest file.
+HEX-encoded SHA-256 fingerprint of the *public key* part of the key-pair which
+you have used to sign your request. It MUST match one of the keys you
+previously published in your manifest file.
 
 
 Security Considerations
