@@ -5,6 +5,17 @@ This document describes all the changes made to the *Authenticating Clients
 with HTTP Signature* document, starting from its first released version.
 
 
+0.3.0
+-----
+
+* Use public key digests instead of actual keys in `keyId` parameter of the
+  `Authorization` header (see
+  [this issue](https://github.com/erasmus-without-paper/ewp-specs-sec-cliauth-httpsig/issues/1)).
+
+* Allow `Original-Date` to be used in place of the `Date` header (see
+  [this issue](https://github.com/erasmus-without-paper/ewp-specs-sec-srvauth-httpsig/issues/1)).
+
+
 0.2.0
 -----
 
