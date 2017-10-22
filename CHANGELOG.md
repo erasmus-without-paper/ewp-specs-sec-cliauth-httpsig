@@ -5,6 +5,21 @@ This document describes all the changes made to the *Authenticating Clients
 with HTTP Signature* document, starting from its first released version.
 
 
+0.4.0
+-----
+
+* Loosened requirements on HTTP response code when invalid `Authorization`
+  header found. HTTP 400 is also a valid response in this case.
+
+* Loosened requirements on the contents of the `WWW-Authenticate` header.
+
+* Clarified that it's not necessary to verify if `keyId` matches a proper
+  format. It's sufficient to check if it has been registered in the Registry
+  (and respond with HTTP 403 if it hasn't).
+
+* Added a new server verification step: Verify `X-Request-Id`.
+
+
 0.3.0
 -----
 
