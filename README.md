@@ -60,20 +60,24 @@ method of authentication, or is using it incorrectly. In this case:
    you SHOULD check if the client doesn't use any of those.
 
  * If the client doesn't use any of the supported authentication methods, then
-   you SHOULD respond with HTTP 401 with a proper `<developer-message>` (it
-   SHOULD describe the reason why you consider the request to be invalid).
+   you MUST respond with HTTP 400 or HTTP 401 error response, with a proper
+   `<developer-message>` (it SHOULD describe the reason why you consider the
+   request to be invalid).
 
-If HTTP Signature Authentication is the preferred method of authentication
-at this endpoint, then is it also RECOMMENDED to include the following headers
-in your HTTP 401 responses:
+   If HTTP Signature Authentication is the preferred method of authentication
+   at this endpoint, then is it RECOMMENDED to respond with HTTP 401, and
+   include the following headers:
 
- * `WWW-Authenticate`, as described [here][httpsig-www-authenticate]. The
-   `headers` parameter of your `WWW-Authenticate` header should contain the
-   list of headers which are required to be signed (the ones listed above). You
-   MAY use any value for `realm` (e.g. "EWP").
+   - `WWW-Authenticate`, as described [here][httpsig-www-authenticate].  Your
+     `realm` value SHOULD be `EWP`.
+   - `Want-Digest`, as described [here][want-digest].
 
- * `Want-Digest`, as described [here][want-digest]. E.g.
-   `Want-Digest: SHA-256`.
+   For example:
+
+   ```http
+   WWW-Authenticate: Signature realm="EWP"
+   Want-Digest: SHA-256
+   ```
 
 
 ### Verify the host
@@ -88,9 +92,8 @@ verify it in your code anyway.
 
 ### Look up the key
 
-Extract the `keyId` from the request's `Authorization` header. It MUST contain
-a HEX-encoded SHA-256 fingerprint. If it doesn't, then you MUST respond with
-HTTP 400 error message.
+Extract the `keyId` from the request's `Authorization` header. (In case of
+problems, respond with HTTP 400 error message.)
 
 The key MUST match at least one of the **public client keys** published in the
 [Registry Service][registry-api]. Consult [Registry API][registry-api] for
@@ -139,6 +142,21 @@ implement nonce verification, then you MUST reject requests who's nonce has
 already been used. You will need to store the set of nonces which have been
 used. Thanks to the `Date` header (or `Original-Date` header), you don't have
 to store the nonces which have been used earlier than 5 minutes ago.
+
+
+### Verify `X-Request-Id`
+
+Even if you don't verify the nonce in the previous step, it is still
+RECOMMENDED to verify the format of the `X-Request-Id` header. It SHOULD be an
+an UUID formatted in a canonical form, e.g. `dc05b425-4e86-4106-8dde-1257fccf53e5`.
+If it's not, then you SHOULD respond with HTTP 400 error response.
+
+If you're wondering why we are recommending this, then it's because we want to
+force clients to use proper values in their `X-Request-Id` header. We expect
+that most servers won't be verifying nonces at this time, and without this
+recommendation, some clients might be tempted to include "dummy" values in
+their `X-Request-Id` header, and no servers would notice that. We want the
+network to collectively prevent that.
 
 
 ### Verify the signature
