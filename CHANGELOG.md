@@ -5,6 +5,12 @@ This document describes all the changes made to the *Authenticating Clients
 with HTTP Signature* document, starting from its first released version.
 
 
+1.0.0
+-----
+
+Upgraded to a stable version.
+
+
 0.4.0
 -----
 
