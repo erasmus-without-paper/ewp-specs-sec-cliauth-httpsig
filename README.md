@@ -284,6 +284,16 @@ you have used to sign your request. It MUST match one of the keys you
 previously published in your manifest file.
 
 
+### Take care to *not* modify it again
+
+Many frameworks or proxies might try to automatically modify your request
+*after* you sign it. For example, it might add or replace some headers with
+more proper values. In many cases, this would be a good thing, but in this
+case, such changes could break your HTTP Signature. Make sure that you try to
+disable all such automatic modifications when you use HTTP Signatures for
+signing.
+
+
 Security Considerations
 -----------------------
 
