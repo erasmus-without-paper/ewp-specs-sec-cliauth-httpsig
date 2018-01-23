@@ -5,6 +5,18 @@ This document describes all the changes made to the *Authenticating Clients
 with HTTP Signature* document, starting from its first released version.
 
 
+1.0.1
+-----
+
+* Added a notice for the server implementers to *ignore* unsigned request
+  headers. (This hasn't been previously stressed enough, and it could lead to
+  security vulnerabilities.)
+
+* Added a notice for client implementers to take care not to allow their
+  frameworks and proxies modify the request after it has been signed (as this
+  could break the signature).
+
+
 1.0.0
 -----
 
