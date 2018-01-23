@@ -179,6 +179,24 @@ In case of mismatch, you MUST respond with HTTP 400 error response. Your error
 response SHOULD include a proper `<developer-message>`.
 
 
+### Ignore unsigned headers
+
+Servers MUST ignore all request headers which hadn't been signed by the client.
+They might have been added by the attacker in transport. This is important
+especially in cases when TLS is not used in some parts of the transport, or
+when you don't fully trust the partner's TLS implementation.
+
+The safest way to properly ignore such headers is to modify your `Request`
+object *now* (during the authentication and authorization process), by either
+removing the suspicious headers, or at least changing their name (e.g.
+prepending it with `Unsigned-`). Then, pass the modified `Request` along as the
+result of your authentication, so that the actual API you are implementing
+believes that the client didn't supply these headers at all. This approach is
+much safer than trusting yourself to remember to verify this every time before
+you access every header in every single ones of your APIs (and some APIs might
+be dependent on request's headers).
+
+
 ### Identify the covered HEIs
 
 In most cases, you will also need to identify which HEIs are covered by the
