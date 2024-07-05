@@ -276,7 +276,10 @@ algorithm, and you MUST include **at least** the following values in your
 If it is important for the server to recognize any other of your headers, then
 you MUST sign all these headers too. The headers mentioned above are important
 for handling authentication, non-repudiation and security described in this
-document, but other headers also MAY be very important in your case.
+document, but other headers also MAY be essential in your case.
+
+One such example would be the `Accept-Signature` header, as explained
+[here][httpsig-accept-signature].
 
 The `keyId` parameter of the `Authorization` header MUST contain a
 HEX-encoded SHA-256 fingerprint of the *public key* part of the key-pair which
@@ -358,6 +361,7 @@ Yes. See *Non-repudiation* section above.
 [digest-base]: https://tools.ietf.org/html/rfc3230#section-4.3.2
 [digest-sha256]: https://tools.ietf.org/html/rfc5843#section-2.2
 [httpsig-authorization]: https://tools.ietf.org/html/draft-cavage-http-signatures-07#section-3.1
+[httpsig-accept-signature]: https://github.com/erasmus-without-paper/ewp-specs-sec-srvauth-httpsig/tree/stable-v1?tab=readme-ov-file#include-accept-signature-header
 [error-handling]: https://github.com/erasmus-without-paper/ewp-specs-architecture#error-handling
 [httpsig-www-authenticate]: https://tools.ietf.org/html/draft-cavage-http-signatures-07#section-3.1.1
 [want-digest]: https://tools.ietf.org/html/rfc3230#section-4.3.1
