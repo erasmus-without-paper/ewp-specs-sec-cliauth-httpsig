@@ -197,17 +197,15 @@ you access every header in every single ones of your APIs (and some APIs might
 be dependent on request's headers).
 
 
-### Identify the covered HEIs
+### Identify the covered HEI
 
-In most cases, you will also need to identify which HEIs are covered by the
-requester (most APIs will require that). Note, that there can be any number of
-them (`0..*`, see discussion
-[here](https://github.com/erasmus-without-paper/ewp-specs-api-echo/issues/3)).
+In most cases, you will also need to identify which HEI is covered by the
+requester (most APIs will require that).
 
-In the previous steps you have already found a *list* (!) of `<host>` elements
+In the previous steps you have already found a `<host>` element
 bound to the client's public key. Now, you will need to build on that
-information, and retrieve *the list of HEIs these hosts cover*. Consult
-[Registry API specification][registry-api] for useful hints (i.e. examples of
+information, and retrieve *the HEI this host covers*. Consult
+[Registry API specification][registry-api] for useful hints (i.e., examples of
 XPath expressions).
 
 
@@ -227,15 +225,13 @@ keys it will use for communicating with other hosts. This list is later fetched
 by registry, and the keys (and/or their fingerprints) are served to all other
 partners see (see [Registry API][registry-api] for details).
 
-Usually (but not necessarily always) you will bind your public key to all HEIs
+Usually (but not necessarily always) you will bind your public key to the HEI
 you cover. Once the server confirms that the client is in possession of a
-proper private key of the certificate, it is then able to identify (with the
-help of the Registry again) which HEIs such client covers.
+proper private key, it is then able to identify (with the
+help of the Registry again) which HEI such client covers.
 
-Note, that the Registry will verify if your keys meet certain security
-standards (i.e. their length). These standards MAY change in time. Remember to
-include `<admin-email>` elements in your manifest file if you want to be
-notified about such changes.
+Note that the Registry will verify if your keys meet certain security
+standards (i.e., their length). These standards MAY change in time.
 
 
 <a name="headers"></a>
@@ -337,9 +333,9 @@ See *Implementing a client* chapter above. The server detect this method by
 checking for the existence of a proper set of headers (in particular, the
 `Authorization: Signature` header).
 
-> How can the server verify which HEIs are covered by the requester?
+> How can the server verify which HEI is covered by the requester?
 
-This is described in the *Identify the covered HEIs* chapter above (in the
+This is described in the *Identify the covered HEI* chapter above (in the
 *Implementing a server* section).
 
 > How can the server verify that the request has not been tampered with, nor
