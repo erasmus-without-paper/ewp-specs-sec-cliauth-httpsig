@@ -201,6 +201,7 @@ be dependent on request's headers).
 
 In most cases, you will also need to identify which HEI is covered by the
 requester (most APIs will require that).
+Note that the requester may not cover any HEI.
 
 In the previous steps you have already found a `<host>` element
 bound to the client's public key. Now, you will need to build on that
