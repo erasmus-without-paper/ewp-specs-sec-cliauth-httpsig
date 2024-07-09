@@ -226,7 +226,7 @@ keys it will use for communicating with other hosts. This list is later fetched
 by registry, and the keys (and/or their fingerprints) are served to all other
 partners see (see [Registry API][registry-api] for details).
 
-Usually (but not necessarily always) you will bind your public key to the HEI
+Public keys are bound to the HEI
 you cover. Once the server confirms that the client is in possession of a
 proper private key, it is then able to identify (with the
 help of the Registry again) which HEI such client covers.
