@@ -5,6 +5,14 @@ This document describes all the changes made to the *Authenticating Clients
 with HTTP Signature* document, starting from its first released version.
 
 
+1.0.2
+-----
+
+* Reworded sentence about key-HEI binding.
+* Updated specification after Discovery 6 update.
+* Added Accept-Signature as an example of a signed header.
+
+
 1.0.1
 -----
 
